@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Tree Builder</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#183a2c;--green:#145b3a;--gold:#d9a62e;--cream:#fff9e8;--blue:#dceeff;--line:#9c6b35;
+--ui-font:system-ui,-apple-system,"Segoe UI",sans-serif;--tree-font:Georgia,serif;--ui-scale:1;--ts:1;
+--bg:#f4f7f5;--text:#23332c;--surface:#ffffff;--border:#e4ebe5;--input-border:#dbe5dd;--muted:#708078;--label:#4c6156;--hover:#f5faf6;--th:#6d7d73;
+--nav-a:#123f2d;--nav-b:#17613e;--hero-a:#fffdf6;--hero-b:#eaf6ef;--accent:#198754;--accent-dark:#146c43;--heading:#145b3a;--shadow:#183a2c08}
+html{font-size:calc(16px*var(--ui-scale))}
+[data-app-theme]{--bs-body-bg:var(--surface);--bs-body-color:var(--text)}
+[data-app-theme=ocean]{--bg:#f1f6fb;--text:#1f2f3d;--border:#dde7f1;--input-border:#cfdceb;--muted:#6a7f93;--label:#44596e;--hover:#f1f7fd;--th:#68809a;--nav-a:#0b3a66;--nav-b:#1668b0;--hero-a:#f8fbff;--hero-b:#e2eefa;--accent:#1565c0;--accent-dark:#0f4f98;--heading:#0f4c81;--shadow:#0b3a6612}
+[data-app-theme=purple]{--bg:#f6f3fb;--text:#2b2340;--border:#e6dff2;--input-border:#d9cfeb;--muted:#7a6f93;--label:#574a73;--hover:#f6f1fd;--th:#7a6c9c;--nav-a:#341b66;--nav-b:#6a3db8;--hero-a:#fcfaff;--hero-b:#ece4f8;--accent:#6a3db8;--accent-dark:#55309a;--heading:#4b2a8c;--shadow:#341b6612}
+[data-app-theme=sunset]{--bg:#fdf6ef;--text:#3a2a1f;--border:#f0e1d2;--input-border:#e8d5c0;--muted:#8f7864;--label:#6b533f;--hover:#fff6ec;--th:#9a8068;--nav-a:#7a3210;--nav-b:#d9622b;--hero-a:#fffaf4;--hero-b:#fbe9d8;--accent:#d9622b;--accent-dark:#b84e1e;--heading:#a8481a;--shadow:#7a321012}
+[data-app-theme=rose]{--bg:#fdf3f7;--text:#3b2230;--border:#f3dce6;--input-border:#ebcfdc;--muted:#946b7f;--label:#6e4a5d;--hover:#fff1f6;--th:#9a7488;--nav-a:#6b1a40;--nav-b:#c2457b;--hero-a:#fffafc;--hero-b:#fbe3ed;--accent:#c2457b;--accent-dark:#a3336a;--heading:#a3336a;--shadow:#6b1a4012}
+[data-app-theme=slate]{--bg:#f1f3f5;--text:#1f2933;--border:#e1e5ea;--input-border:#d3d9e0;--muted:#6b7785;--label:#475463;--hover:#f3f5f7;--th:#6b7785;--nav-a:#1f2937;--nav-b:#3b4656;--hero-a:#fafbfc;--hero-b:#e8ecf0;--accent:#374151;--accent-dark:#1f2937;--heading:#1f2937;--shadow:#1f293712}
+[data-app-theme=dark]{--bg:#11171a;--text:#e3eae6;--surface:#1a2328;--border:#2b3840;--input-border:#35444d;--muted:#93a39b;--label:#b3c2ba;--hover:#212c32;--th:#93a39b;--nav-a:#0a1411;--nav-b:#15302a;--hero-a:#18231f;--hero-b:#14201c;--accent:#2a9d6b;--accent-dark:#217f55;--heading:#6fd1a2;--shadow:#00000040;--bs-body-bg:#1a2328;--bs-body-color:#e3eae6;--bs-border-color:#2b3840}
+.btn-success{--bs-btn-bg:var(--accent);--bs-btn-border-color:var(--accent);--bs-btn-hover-bg:var(--accent-dark);--bs-btn-hover-border-color:var(--accent-dark);--bs-btn-active-bg:var(--accent-dark);--bs-btn-active-border-color:var(--accent-dark);--bs-btn-disabled-bg:var(--accent);--bs-btn-disabled-border-color:var(--accent)}
+.btn-outline-success{--bs-btn-color:var(--accent);--bs-btn-border-color:var(--accent);--bs-btn-hover-bg:var(--accent);--bs-btn-hover-border-color:var(--accent);--bs-btn-active-bg:var(--accent);--bs-btn-active-border-color:var(--accent)}
+.text-bg-success{background-color:var(--accent)!important}
+.card{--bs-card-bg:var(--surface);--bs-card-color:var(--text)}
+.form-control:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 .2rem color-mix(in srgb,var(--accent) 22%,transparent)}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.theme-opt{display:flex;align-items:center;gap:8px;padding:6px 8px;border:2px solid var(--border);border-radius:10px;cursor:pointer;font-size:.82rem;background:var(--surface);color:var(--text)}
+.theme-opt input{display:none}.theme-opt.active{border-color:var(--accent)}
+.swatch{width:22px;height:22px;border-radius:50%;flex:none;border:1px solid #0003}
+body{background:var(--bg);color:var(--text);font-family:var(--ui-font)}
+.navbar{background:linear-gradient(100deg,var(--nav-a),var(--nav-b));box-shadow:0 3px 14px #173f2d20}
+.brand-mark{width:38px;height:38px;border-radius:12px;background:#f5d66b;color:#17452f;display:grid;place-items:center;font-size:22px}
+.hero{background:linear-gradient(120deg,var(--hero-a),var(--hero-b));border:1px solid var(--border);border-radius:22px}
+.panel{border:1px solid var(--border);border-radius:18px;box-shadow:0 5px 22px var(--shadow)}
+.form-label{font-size:.82rem;font-weight:700;color:var(--label)}
+.form-control,.form-select{border-color:var(--input-border);border-radius:10px}
+.btn{border-radius:10px;font-weight:600}
+.tree-shell{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:auto;min-height:350px}
+#treeScaler{margin:0 auto;overflow:hidden}
+#treeCanvas{position:relative;margin:0;background:#fffdf7;overflow:hidden;transform-origin:0 0}
+#treeLines{position:absolute;inset:0;pointer-events:none}
+.family-node{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:2px solid #c58a16;border-radius:17px;background:linear-gradient(180deg,#fffef9,#fff0c6);box-shadow:0 3px 0 #8b5b14;box-sizing:border-box;padding:10px 9px;z-index:2}
+.family-node .person{width:100%}
+.family-node .couple{display:flex;justify-content:center;align-items:flex-start;gap:6px;width:100%}
+.family-node .couple .person{width:auto;min-width:0;max-width:calc(200px*var(--ts));flex:0 1 auto}
+.family-node .amp-side{display:flex;align-items:center;font-size:calc(13px*var(--ts));color:#9a7a3a}
+.family-node .amp{font-size:calc(11px*var(--ts));line-height:1;color:#9a7a3a;margin:3px 0}
+.node-dates{font-size:calc(10px*var(--ts));color:#6b6a5e;margin-top:1px;white-space:nowrap}
+.node-name{font-family:var(--tree-font);font-weight:700;font-size:calc(14px*var(--ts));line-height:1.22;color:#2d2a22;overflow-wrap:anywhere}
+.node-meta{font-size:calc(10px*var(--ts));color:#6b6a5e;margin-top:4px}
+.family-node.root{border:3px solid #b47c0d;background:linear-gradient(180deg,#fffef5,#ffe7a0);border-radius:23px}
+.family-node.root .node-name{font-size:calc(18px*var(--ts));color:#145b3a}
+.family-node.gen2{background:linear-gradient(180deg,#f7fcff,#dceeff);border-color:#4d91c9;box-shadow:0 3px 0 #28649a}
+.family-node.gen3{background:linear-gradient(180deg,#fffef8,#fff0c7)}
+.family-node.gen4{background:linear-gradient(180deg,#fff9fc,#ffe0e9);border-color:#d77a98;box-shadow:0 3px 0 #a74d6b}
+.tree-heading{font-family:var(--tree-font);letter-spacing:.04em;color:var(--heading)}
+.small-muted{font-size:.82rem;color:var(--muted)}
+.member-row:hover{background:var(--hover)}
+.member-table th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--th)}
+.empty-state{padding:60px 20px;text-align:center;color:var(--muted)}
+.members-scroll{max-height:470px}
+@media(min-width:1200px){.members-card .card-body{display:flex;flex-direction:column}.members-scroll{flex:1 1 0;min-height:320px;max-height:none}}
+.family-node.compact{padding:6px 8px;border-radius:12px}
+/* Export only: html2canvas paints solid box-shadows as stray blocks, so use a thicker bottom edge instead. */
+.exporting .family-node{box-shadow:none!important;border-bottom:5px solid #8b5b14!important}
+.exporting .family-node.root{border-bottom:6px solid #8b5b14!important}
+.exporting .family-node.gen2{border-bottom-color:#28649a!important}
+.exporting .family-node.gen4{border-bottom-color:#a74d6b!important}
+.family-node.compact .node-name{font-size:calc(13px*var(--ts))}
+.family-node.root.compact .node-name{font-size:calc(14px*var(--ts))}
+.gen-band{position:absolute;left:0;right:0;background:rgba(20,91,58,.045);z-index:1}
+.gen-band.alt{background:rgba(217,166,46,.09)}
+.gen-label{position:absolute;left:0;display:flex;align-items:center;padding-left:18px;box-sizing:border-box;font-family:var(--tree-font);font-weight:700;font-size:calc(14px*var(--ts));color:#145b3a;z-index:1}
+@media(max-width:767px){.hero{border-radius:16px}.toolbar{width:100%}}
+@media print{.no-print{display:none!important}body{background:#fff}#treeCanvas{margin:0}}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-dark no-print">
+ <div class="container-fluid px-3 px-lg-4">
+  <div class="d-flex align-items-center gap-3 text-white">
+   <div class="brand-mark">🌳</div>
+   <div><div class="fw-bold">Family Tree Builder</div><div class="small opacity-75">Capture relationships · Visualize generations · Export as JPEG or Excel</div></div>
+  </div>
+  <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+   <div class="dropdown">
+    <button class="btn btn-outline-light btn-sm dropdown-toggle" id="appearanceBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">🎨 Appearance</button>
+    <div class="dropdown-menu dropdown-menu-end p-3 shadow" style="width:330px;max-width:92vw">
+     <div class="form-label mb-2">Theme</div>
+     <div class="theme-grid" id="themeGrid"></div>
+     <div class="mt-3"><label class="form-label mb-1" for="fontSel">Font</label><select class="form-select form-select-sm" id="fontSel"></select></div>
+     <div class="mt-3"><div class="d-flex justify-content-between"><label class="form-label mb-1" for="sizeRange">Font size</label><span class="small-muted" id="sizeLabel">100%</span></div><input type="range" class="form-range" id="sizeRange" min="85" max="140" step="5" value="100"></div>
+     <div class="d-flex justify-content-between align-items-center gap-2 mt-2"><span class="small-muted text-truncate" id="fontPreview">Aa · The quick brown fox</span><button type="button" class="btn btn-sm btn-outline-secondary flex-none" id="appearanceReset">Reset</button></div>
+    </div>
+   </div>
+   <button class="btn btn-outline-light btn-sm" id="resetBtn">↺ Reset data</button><button class="btn btn-danger btn-sm" id="clearAllBtn">🗑 Clear all</button></div>
+ </div>
+</nav>
+<main class="container-fluid px-3 px-lg-4 py-4">
+ <section class="hero p-4 p-lg-5 mb-4 no-print">
+  <div class="row align-items-center g-3">
+   <div class="col-lg-9">
+    <span class="badge rounded-pill text-bg-success mb-2">Family relationship workspace</span>
+    <h1 class="display-6 fw-bold mb-2">Build your family tree.</h1>
+    <p class="mb-0 text-secondary">Add family members, link parents and spouses, and see the family tree update instantly. The supplied Excel family list has been loaded as a starting point.</p>
+  </div>
+ </div>
+ </section>
+
+ <div class="row g-4 no-print">
+  <div class="col-xl-4">
+   <section class="card panel">
+    <div class="card-body p-4">
+     <div class="d-flex justify-content-between align-items-start mb-3">
+      <div><h2 class="h5 fw-bold mb-1">Family member details</h2><div class="small-muted">Create or edit a person</div></div>
+      <span class="badge text-bg-light border" id="formMode">New member</span>
+     </div>
+     <form id="memberForm">
+      <input type="hidden" id="editOriginalName">
+      <div class="mb-3"><label class="form-label" for="name">Full name *</label><input class="form-control" id="name" required maxlength="80" placeholder="e.g. Arun Kumar"></div>
+      <div class="row g-3">
+       <div class="col-6"><label class="form-label" for="generation">Generation *</label><select class="form-select" id="generation" required><option value="1">Generation 1</option><option value="2">Generation 2</option><option value="3" selected>Generation 3</option><option value="4">Generation 4</option><option value="5">Generation 5</option><option value="6">Generation 6</option><option value="7">Generation 7</option></select></div>
+       <div class="col-6"><label class="form-label" for="gender">Gender / icon</label><select class="form-select" id="gender"><option>Male</option><option>Female</option></select></div>
+      </div>
+      <div class="row g-3 mt-1">
+       <div class="col-6"><label class="form-label" for="dob">Date of birth</label><input type="date" class="form-control" id="dob"></div>
+       <div class="col-6"><label class="form-label" for="dod">Date of death <span class="fw-normal text-secondary">(optional)</span></label><input type="date" class="form-control" id="dod"></div>
+      </div>
+      <div class="mt-3"><label class="form-label" for="spouse">Spouse / partner</label><select class="form-select" id="spouse"><option value="">— Not specified —</option></select><div class="form-text">Lists members of the previous, same or next generation.</div><div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="kin"><label class="form-check-label" for="kin">Married within the same family (show ▽ symbol)</label></div></div>
+      <div class="row g-3 mt-1">
+       <div class="col-6"><label class="form-label" for="father">Father</label><select class="form-select" id="father"><option value="">— Not specified —</option></select></div>
+       <div class="col-6"><label class="form-label" for="mother">Mother</label><select class="form-select" id="mother"><option value="">— Not specified —</option></select></div>
+      </div>
+      <div class="form-text">Father: males of the previous generation. Mother: females of the previous generation.</div>
+      <div class="mt-3"><label class="form-label" for="sibOrder">Sibling order <span class="fw-normal text-secondary">(1 = leftmost)</span></label><input type="number" class="form-control" id="sibOrder" min="1" step="1" placeholder="e.g. 1"><div class="form-text">Arranges siblings left to right in the tree. Suggested automatically when parents are chosen.</div></div>
+      <div class="mt-3"><label class="form-label" for="notes">Relationship / notes</label><textarea class="form-control" id="notes" rows="2" maxlength="300" placeholder="Optional notes"></textarea></div>
+      <div class="d-flex gap-2 mt-4">
+       <button type="submit" class="btn btn-success flex-grow-1" id="saveBtn">Save member</button>
+       <button type="button" class="btn btn-outline-secondary" id="cancelEditBtn">Clear</button>
+      </div>
+     </form>
+     <div class="alert alert-warning py-2 px-3 mt-3 mb-0 small">Names are used to connect relationships. Keep each name unique. For best results, set both parents for each child.</div>
+    </div>
+   </section>
+  </div>
+  <div class="col-xl-8">
+   <section class="card panel h-100 members-card">
+    <div class="card-body p-4">
+     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <div><h2 class="h5 fw-bold mb-1">Family members</h2><div class="small-muted">Select Edit to change a person's details</div></div>
+      <button type="button" class="btn btn-success btn-sm" id="addNewBtn">＋ Add member</button>
+     </div>
+     <div class="row g-2 mb-3">
+      <div class="col-sm-7"><div class="input-group"><span class="input-group-text bg-body">⌕</span><input id="searchMembers" class="form-control" placeholder="Search names..."></div></div>
+      <div class="col-sm-5"><div class="input-group"><span class="input-group-text bg-body" title="Sort">⇅</span><select class="form-select" id="sortMembers" aria-label="Sort members"><option value="default">Generation &amp; sibling order</option><option value="nameAsc">Name (A–Z)</option><option value="nameDesc">Name (Z–A)</option><option value="dobAsc">Birth date (oldest first)</option><option value="dobDesc">Birth date (youngest first)</option><option value="genDesc">Generation (latest first)</option></select></div></div>
+     </div>
+     <div class="table-responsive members-scroll">
+      <table class="table align-middle member-table mb-0">
+       <thead class="sticky-top bg-body"><tr><th>Name</th><th>Gen.</th><th>Order</th><th>Parents</th><th></th></tr></thead>
+       <tbody id="membersTable"></tbody>
+      </table>
+     </div>
+    </div>
+   </section>
+  </div>
+ </div>
+
+ <section class="card panel mt-4">
+  <div class="card-body p-3 p-lg-4">
+   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h2 class="h4 tree-heading fw-bold mb-1">Our Family Tree</h2><div class="small-muted" id="treeSubtitle">Family relationships arranged by generation</div></div>
+    <div class="d-flex flex-wrap gap-2 no-print"><button class="btn btn-outline-secondary btn-sm" id="fitBtn">⤢ Fit view</button><button class="btn btn-success btn-sm" id="exportBtn">⬇ Download JPEG</button><button class="btn btn-outline-success btn-sm" id="exportXlsxBtn">⬇ Export Excel</button></div>
+   </div>
+   <div class="d-flex flex-wrap align-items-center gap-2 no-print mb-3 p-2 rounded-3 border bg-body-tertiary" id="saveBar">
+    <span class="small fw-semibold me-1">Data file</span>
+    <button class="btn btn-primary btn-sm" id="saveJsonBtn" title="Save all members as a JSON file">💾 Save as JSON</button>
+    <button class="btn btn-primary btn-sm" id="saveCsvBtn" title="Save all members as a CSV file (opens in Excel)">💾 Save as CSV</button>
+    <button class="btn btn-outline-primary btn-sm" id="openDataBtn" title="Load members from a saved JSON or CSV file">📂 Open saved file</button>
+    <input type="file" id="openDataInput" accept=".json,.csv,application/json,text/csv" hidden>
+    <div class="form-check form-switch ms-1 mb-0"><input class="form-check-input" type="checkbox" role="switch" id="autoSave"><label class="form-check-label small" for="autoSave" id="autoSaveLbl">Auto-save after every change</label></div>
+    <span class="small text-secondary" id="saveHint">Tip: in the save window, choose the same folder as this HTML file.</span>
+   </div>
+   <div class="row g-2 align-items-end mb-3 no-print">
+    <div class="col-6 col-md-3 col-xl-2"><label class="form-label mb-1" for="viewMode">Tree view</label><select class="form-select form-select-sm" id="viewMode"><option value="td">Top-down tree</option><option value="lr">Left-to-right tree</option><option value="rows">Generation rows</option></select></div>
+    <div class="col-6 col-md-3 col-xl-2"><label class="form-label mb-1" for="detailMode">Detail</label><select class="form-select form-select-sm" id="detailMode"><option value="full">Detailed (with dates)</option><option value="compact">Compact (names only)</option></select></div>
+    <div class="col-12 col-md-6 col-xl-3"><label class="form-label mb-1" for="branchSel">Show branch of</label><select class="form-select form-select-sm" id="branchSel" title="Shows this person's couple and all their descendants"><option value="">Whole family</option></select></div>
+   </div>
+   <div class="d-flex flex-wrap gap-2 no-print mb-3"><span class="badge rounded-pill text-bg-light border">🟡 Generation 1</span><span class="badge rounded-pill" style="background:#dceeff;color:#24577f">🔵 Generation 2</span><span class="badge rounded-pill" style="background:#fff0c7;color:#72500a">🟠 Generation 3</span><span class="badge rounded-pill" style="background:#ffe0e9;color:#883d57">🌸 Generation 4+</span><span class="badge rounded-pill text-bg-light border d-inline-flex align-items-center gap-1"><svg width="13" height="12" viewBox="0 0 16 15" aria-hidden="true"><polygon points="1.5,1.5 14.5,1.5 8,13.5" fill="#fbe3a1" stroke="#9a5f0b" stroke-width="1.7" stroke-linejoin="round"/></svg> Wedding within the family</span></div>
+   <div class="tree-shell" id="treeShell">
+    <div id="treeScaler"><div id="treeCanvas"><svg id="treeLines" xmlns="http://www.w3.org/2000/svg"></svg><div id="treeNodes"></div></div></div>
+   </div>
+   <div class="small-muted mt-3">Tip: on a small screen, scroll horizontally to explore the complete tree.</div>
+  </div>
+ </section>
+ <div class="text-center small text-secondary py-4 no-print">Your edits stay in this page while it remains open. Download the JPEG or Excel file before closing the page.</div>
+</main>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="appToast" class="toast" role="status"><div class="toast-header"><strong class="me-auto">Family Tree Builder</strong><button class="btn-close" data-bs-dismiss="toast"></button></div><div class="toast-body" id="toastText">Done</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const initialData = [{"generation": 1, "name": "Mottaiya Reddy", "spouse": "Gengaiyammal     (Idharapakkam)", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 1, "name": "Erusa reddy", "spouse": "Desammal         (Avi - pudhur)", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 1, "name": "Gengaiyammal     (Idharapakkam)", "spouse": "Mottaiya Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 1, "name": "Desammal         (Avi - pudhur)", "spouse": "Erusa reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 1, "name": "Chinnu Reddy       (Veerattagam)", "spouse": "", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 2, "name": "Appavu Reddy", "spouse": "Khokiliya", "father": "Mottaiya Reddy", "mother": "Gengaiyammal     (Idharapakkam)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 2, "name": "Veerasami Reddy", "spouse": "Rukku", "father": "Mottaiya Reddy", "mother": "Gengaiyammal     (Idharapakkam)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 2, "name": "Subba Reddy", "spouse": "Salambu", "father": "Erusa reddy", "mother": "Desammal         (Avi - pudhur)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1, "kin": true}, {"generation": 2, "name": "Salambu", "spouse": "Subba Reddy", "father": "Mottaiya Reddy", "mother": "Gengaiyammal     (Idharapakkam)", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1, "kin": true}, {"generation": 3, "name": "Kuppuammal", "spouse": "Subbareddy", "father": "Subba Reddy", "mother": "Salambu", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 3, "name": "Erusa reddy v2", "spouse": "Beththayeammal", "father": "Subba Reddy", "mother": "Salambu", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 3, "name": "Balakrishnan Reddy", "spouse": "Desammal", "father": "Subba Reddy", "mother": "Salambu", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 2, "name": "Khokiliya", "spouse": "Appavu Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 2, "name": "Rukku", "spouse": "Veerasami Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 3, "name": "Desammal", "spouse": "Balakrishnan Reddy", "father": "Veerasami Reddy", "mother": "Rukku", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 3, "name": "Beththayeammal", "spouse": "Erusa reddy v2", "father": "Appavu Reddy", "mother": "Khokiliya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 3, "name": "Jayaraman Reddy", "spouse": "Aandal", "father": "Appavu Reddy", "mother": "Khokiliya", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 2, "name": "Veerasamy Reddy", "spouse": "Seethaammal", "father": "Chinnu Reddy       (Veerattagam)", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 2, "name": "Seethaammal", "spouse": "Veerasamy Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 3, "name": "Subbareddy", "spouse": "Kuppuammal", "father": "Veerasamy Reddy", "mother": "Seethaammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Aandal", "spouse": "Jayaraman Reddy", "father": "Erusa reddy v2", "mother": "Beththayeammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Navanithan Reddy", "spouse": "Raji", "father": "Jayaraman Reddy", "mother": "Aandal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 4, "name": "Dhakshanamoorthy Reddy", "spouse": "Raani", "father": "Balakrishnan Reddy", "mother": "Desammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 4, "name": "Baskaran Reddy", "spouse": "Umamaheswari", "father": "Balakrishnan Reddy", "mother": "Desammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 4, "name": "Selvi", "spouse": "Ramalingam", "father": "Balakrishnan Reddy", "mother": "Desammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 4}, {"generation": 4, "name": "Ramalingam", "spouse": "Selvi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Poonkovil", "spouse": "Ramakrishnana", "father": "Subbareddy", "mother": "Kuppuammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 4, "name": "Jayalakshimi", "spouse": "Govindhasami Reddy", "father": "Subbareddy", "mother": "Kuppuammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Pownambal", "spouse": "Periyasamy Reddy", "father": "Subbareddy", "mother": "Kuppuammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 3}, {"generation": 4, "name": "Perumal Reddy", "spouse": "Desammal V2", "father": "Subbareddy", "mother": "Kuppuammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 4, "name": "Krishana Reddy", "spouse": "Sulochana & Poonkovil", "father": "Subbareddy", "mother": "Kuppuammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 5}, {"generation": 4, "name": "Srinivasan Reddy", "spouse": "Amsadevi", "father": "Subbareddy", "mother": "Kuppuammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 6}, {"generation": 3, "name": "Govindhasami Reddy", "spouse": "Jayalakshimi", "father": "Subba Reddy", "mother": "Salambu", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 4, "name": "Desammal V2", "spouse": "Perumal Reddy", "father": "Erusa reddy v2", "mother": "Beththayeammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Amsadevi", "spouse": "Srinivasan Reddy", "father": "Erusa reddy v2", "mother": "Beththayeammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 3}, {"generation": 4, "name": "Sambath Reddy", "spouse": "Selvi kanthalvadi", "father": "Erusa reddy v2", "mother": "Beththayeammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 4, "name": "Selvi kanthalvadi", "spouse": "Sambath Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Rajaram Reddy", "spouse": "Bhuvaneswari(Nasinur)", "father": "Balakrishnan Reddy", "mother": "Desammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Bhuvaneswari(Nasinur)", "spouse": "Rajaram Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Kannan Reddy", "spouse": "Jaya (Avi-Pudhur)", "father": "Balakrishnan Reddy", "mother": "Desammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 5}, {"generation": 4, "name": "Sulochana & Poonkovil", "spouse": "Krishana Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Periyasamy Reddy", "spouse": "Pownambal", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Venugolpal Reddy", "spouse": "Pathmavathi", "father": "Periyasamy Reddy", "mother": "Pownambal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Mannar Reddy", "spouse": "Vasantha", "father": "Govindhasami Reddy", "mother": "Jayalakshimi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Sundharam Reddy", "spouse": "Venkadathiri", "father": "Govindhasami Reddy", "mother": "Jayalakshimi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Ramamoorthy Reddy", "spouse": "Devaki", "father": "Perumal Reddy", "mother": "Desammal V2", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Narayanan", "spouse": "Kala", "father": "Perumal Reddy", "mother": "Desammal V2", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Pathmavathi", "spouse": "Venugolpal Reddy", "father": "Perumal Reddy", "mother": "Desammal V2", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Senthilmurugan reddy", "spouse": "Manju", "father": "Perumal Reddy", "mother": "Desammal V2", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 5, "name": "Ravi Reddy", "spouse": "Santhi", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Thiruvenkadam Reddy", "spouse": "Saraswathi(Keeranur)", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Poovarakamoorthy reddy", "spouse": "Kokila", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Sankaranarayanan Reddy", "spouse": "Mahalakshimi", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 6}, {"generation": 5, "name": "Thulasi", "spouse": "chinnathambi", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 7}, {"generation": 5, "name": "Umamaheswari", "spouse": "Baskaran Reddy", "father": "Srinivasan Reddy", "mother": "Amsadevi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Saraswathi", "spouse": "Pattabiraman", "father": "Srinivasan Reddy", "mother": "Amsadevi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Seethalakshimi", "spouse": "Somasundharam", "father": "Srinivasan Reddy", "mother": "Amsadevi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Venkateshwaran Reddy", "spouse": "karthika", "father": "Srinivasan Reddy", "mother": "Amsadevi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 5, "name": "Raja Reddy", "spouse": "Gowthami", "father": "Srinivasan Reddy", "mother": "Amsadevi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 5}, {"generation": 4, "name": "Ramakrishnana", "spouse": "Poonkovil", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Varadharaj Reddy", "spouse": "Selvi Keeranur", "father": "Ramakrishnana", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Rajalakshimi", "spouse": "Subramani Reddy", "father": "Ramakrishnana", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Thulasi ammal", "spouse": "Vasanthakumar Reddy(Then Kalavai)", "father": "Ramakrishnana", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Selvi Keeranur", "spouse": "Varadharaj Reddy", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Subramani Reddy", "spouse": "Rajalakshimi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Vasanthakumar Reddy(Then Kalavai)", "spouse": "Thulasi ammal", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Selvaraj Reddy", "spouse": "Sudha", "father": "Ramakrishnana", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 5, "name": "Sudha", "spouse": "Selvaraj Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Jothimani", "spouse": "Aarthishwari", "father": "Varadharaj Reddy", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Aandal V2", "spouse": "Venkatesan", "father": "Subramani Reddy", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Gunasekar Reddy", "spouse": "Desammal v3", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Venkatesan", "spouse": "Aandal V2", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Anjan", "spouse": "", "father": "Gunasekar Reddy", "mother": "Desammal v3", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "sarvesh", "spouse": "", "father": "Venkatesan", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Arunraj", "spouse": "Suganthi", "father": "Thulasi ammal", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Saranraj(Ashok)", "spouse": "Vishnu Barathi", "father": "Thulasi ammal", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Suganthi", "spouse": "Arunraj", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Vishnu Barathi", "spouse": "Saranraj(Ashok)", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Murugusriram", "spouse": "", "father": "Saranraj(Ashok)", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Vanmathai", "spouse": "", "father": "Selvaraj Reddy", "mother": "Sudha", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Akshaya", "spouse": "", "father": "Selvaraj Reddy", "mother": "Sudha", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Desammal v3", "spouse": "Gunasekar Reddy", "father": "Subramani Reddy", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Vasanth", "spouse": "Abirami", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Sai", "spouse": "", "father": "Vasanth", "mother": "Abirami", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Devaki", "spouse": "Ramamoorthy Reddy", "father": "Ramakrishnana", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 5}, {"generation": 6, "name": "Sridharan", "spouse": "Vasanthi", "father": "Ramamoorthy Reddy", "mother": "Devaki", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Sivaram", "spouse": "Karunya Dharshini", "father": "Ramamoorthy Reddy", "mother": "Devaki", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 6, "name": "Vasanthi", "spouse": "Sridharan", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Karunya Dharshini", "spouse": "Sivaram", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Gokil", "spouse": "", "father": "Vasanth", "mother": "Abirami", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 7, "name": "Harshith", "spouse": "", "father": "Sridharan", "mother": "Vasanthi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Abirami", "spouse": "Vasanth", "father": "Ramamoorthy Reddy", "mother": "Devaki", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Sriram Ganesh", "spouse": "Pavithra", "father": "Venugolpal Reddy", "mother": "Pathmavathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Venkatesh", "spouse": "Nandhini", "father": "Venugolpal Reddy", "mother": "Pathmavathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Nandhini", "spouse": "Venkatesh", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Saimithran", "spouse": "", "father": "Venkatesh", "mother": "Nandhini", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Pavithra", "spouse": "Sriram Ganesh", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Varshith", "spouse": "", "father": "Sriram Ganesh", "mother": "Pavithra", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "Sanjeev", "spouse": "", "father": "Sriram Ganesh", "mother": "Pavithra", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Jegannathan", "spouse": "Devi", "father": "Baskaran Reddy", "mother": "Umamaheswari", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Anusha Nandhini", "spouse": "Devananthan", "father": "Baskaran Reddy", "mother": "Umamaheswari", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Devananthan", "spouse": "Anusha Nandhini", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Harini", "spouse": "", "father": "Devananthan", "mother": "Anusha Nandhini", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Sathya", "spouse": "Prabakaran Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Thiruvikraman", "spouse": "", "father": "Prabakaran Reddy", "mother": "Sathya", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Pathmanaban", "spouse": "Kowri", "father": "Sambath Reddy", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Kowri", "spouse": "Pathmanaban", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Raji", "spouse": "Navanithan Reddy", "father": "Sambath Reddy", "mother": "Selvi kanthalvadi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Inthuja", "spouse": "", "father": "Navanithan Reddy", "mother": "Raji", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Mohanakrishnana", "spouse": "", "father": "Navanithan Reddy", "mother": "Raji", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Vinayagam", "spouse": "Divya", "father": "Sambath Reddy", "mother": "Selvi kanthalvadi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Varatharaj", "spouse": "", "father": "Sambath Reddy", "mother": "Selvi kanthalvadi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 7, "name": "Sathvik", "spouse": "", "father": "Arunraj", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 7, "name": "Sanantha Sri", "spouse": "", "father": "Arunraj", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Prakash(Karthi)", "spouse": "Nithiya", "father": "Rajaram Reddy", "mother": "Bhuvaneswari(Nasinur)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Nithiya", "spouse": "Prakash(Karthi)", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Sriram(Senji)", "spouse": "Revathi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Magizhneelan", "spouse": "", "father": "Jothimani", "mother": "Aarthishwari", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Aarthishwari", "spouse": "Jothimani", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Murali krishnan", "spouse": "Meena", "father": "Rajaram Reddy", "mother": "Bhuvaneswari(Nasinur)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 7, "name": "Anvikasri", "spouse": "", "father": "Saranraj(Ashok)", "mother": "Vishnu Barathi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "SaiKiruba", "spouse": "", "father": "Prakash(Karthi)", "mother": "Nithiya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Rohith", "spouse": "", "father": "Sriram(Senji)", "mother": "Revathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Kowsik", "spouse": "", "father": "Sriram(Senji)", "mother": "Revathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Revathi", "spouse": "Sriram(Senji)", "father": "Rajaram Reddy", "mother": "Bhuvaneswari(Nasinur)", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Vishwa", "spouse": "", "father": "Murali krishnan", "mother": "Meena", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Meena", "spouse": "Murali krishnan", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Raani", "spouse": "Dhakshanamoorthy Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Indhumathi", "spouse": "Vijayabaskar(Senji)", "father": "Dhakshanamoorthy Reddy", "mother": "Raani", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Bharathan", "spouse": "Ramadevi", "father": "Dhakshanamoorthy Reddy", "mother": "Raani", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Jeevalakshimi", "spouse": "", "father": "Pathmanaban", "mother": "Kowri", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Pathmavathi v2", "spouse": "", "father": "Pathmanaban", "mother": "Kowri", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Sabarish", "spouse": "", "father": "Pathmanaban", "mother": "Kowri", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 6, "name": "Ponni", "spouse": "Naveen", "father": "Prabakaran Reddy", "mother": "Sathya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Naveen", "spouse": "Ponni", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Divya", "spouse": "Vinayagam", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Kanishka", "spouse": "", "father": "Vinayagam", "mother": "Divya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Vijayabaskar(Senji)", "spouse": "Indhumathi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Ramadevi", "spouse": "Bharathan", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Harthik", "spouse": "", "father": "Naveen", "mother": "Ponni", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Sivanthan", "spouse": "", "father": "Vijayabaskar(Senji)", "mother": "Indhumathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Kavin", "spouse": "", "father": "Vijayabaskar(Senji)", "mother": "Indhumathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Kaviyazhini", "spouse": "", "father": "Bharathan", "mother": "Ramadevi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Jaya (Avi-Pudhur)", "spouse": "Kannan Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Mokesh", "spouse": "", "father": "Kannan Reddy", "mother": "Jaya (Avi-Pudhur)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Aarthi", "spouse": "", "father": "Kannan Reddy", "mother": "Jaya (Avi-Pudhur)", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Dhivya", "spouse": "Vettri", "father": "Ramalingam", "mother": "Selvi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Rajmohan", "spouse": "", "father": "Ramalingam", "mother": "Selvi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Vettri", "spouse": "Dhivya", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Thamizhini", "spouse": "", "father": "Vettri", "mother": "Dhivya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Kavinal", "spouse": "", "father": "Vettri", "mother": "Dhivya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Vasantha", "spouse": "Mannar Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Saravanan", "spouse": "Ananthi", "father": "Mannar Reddy", "mother": "Vasantha", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Gomathi", "spouse": "Prakash", "father": "Mannar Reddy", "mother": "Vasantha", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Ramani", "spouse": "Mani", "father": "Mannar Reddy", "mother": "Vasantha", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 3}, {"generation": 6, "name": "Amarnath", "spouse": "", "father": "Mannar Reddy", "mother": "Vasantha", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 4}, {"generation": 6, "name": "Ananthi", "spouse": "Saravanan", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Prakash", "spouse": "Gomathi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Mani", "spouse": "Ramani", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Sethu", "spouse": "", "father": "Prakash", "mother": "Gomathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "Guru", "spouse": "", "father": "Prakash", "mother": "Gomathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 7, "name": "Monisha", "spouse": "", "father": "Mani", "mother": "Ramani", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "Elamaran", "spouse": "", "father": "Mani", "mother": "Ramani", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Venkadathiri", "spouse": "Sundharam Reddy", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 4}, {"generation": 6, "name": "Puruthoshaman", "spouse": "", "father": "Sundharam Reddy", "mother": "Venkadathiri", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Alamelu", "spouse": "Praveen", "father": "Sundharam Reddy", "mother": "Venkadathiri", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Praveen", "spouse": "Alamelu", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Kala", "spouse": "Narayanan", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Devi", "spouse": "Jegannathan", "father": "Narayanan", "mother": "Kala", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "D.J.Tharun", "spouse": "", "father": "Jegannathan", "mother": "Devi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Brindha", "spouse": "Nilavazhagan", "father": "Narayanan", "mother": "Kala", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Nilavazhagan", "spouse": "Brindha", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 3, "name": "Nurseammal", "spouse": "sambasivam Reddy", "father": "Veerasamy Reddy", "mother": "Seethaammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Santhi", "spouse": "Ravi Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Saranya", "spouse": "Lingam", "father": "Ravi Reddy", "mother": "Santhi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Priya", "spouse": "Yeshwanth", "father": "Ravi Reddy", "mother": "Santhi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Vignesh", "spouse": "", "father": "Ravi Reddy", "mother": "Santhi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Saraswathi(Keeranur)", "spouse": "Thiruvenkadam Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Gayathiri", "spouse": "Ramprasath", "father": "Thiruvenkadam Reddy", "mother": "Saraswathi(Keeranur)", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Dinesh", "spouse": "", "father": "Thiruvenkadam Reddy", "mother": "Saraswathi(Keeranur)", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Kokila", "spouse": "Poovarakamoorthy reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Charumathi", "spouse": "", "father": "Poovarakamoorthy reddy", "mother": "Kokila", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Logeshwari", "spouse": "", "father": "Poovarakamoorthy reddy", "mother": "Kokila", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Devananth", "spouse": "", "father": "Poovarakamoorthy reddy", "mother": "Kokila", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 3, "name": "sambasivam Reddy", "spouse": "Nurseammal", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Jayaprakash Narayanan Reddy", "spouse": "Manimegalai", "father": "sambasivam Reddy", "mother": "Nurseammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Ashok Kumar Reddy", "spouse": "Vimala", "father": "sambasivam Reddy", "mother": "Nurseammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 4, "name": "Rajenthiran", "spouse": "", "father": "sambasivam Reddy", "mother": "Nurseammal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 4, "name": "Manimegalai", "spouse": "Jayaprakash Narayanan Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Vimala", "spouse": "Ashok Kumar Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Santhosh Kumar", "spouse": "", "father": "Jayaprakash Narayanan Reddy", "mother": "Manimegalai", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "SathishKumar", "spouse": "", "father": "Jayaprakash Narayanan Reddy", "mother": "Manimegalai", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Niththiya", "spouse": "", "father": "Jayaprakash Narayanan Reddy", "mother": "Manimegalai", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 3}, {"generation": 6, "name": "Dhiyash", "spouse": "", "father": "Santhosh Kumar", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Nikilesh", "spouse": "", "father": "Santhosh Kumar", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Manju", "spouse": "Senthilmurugan reddy", "father": "Ashok Kumar Reddy", "mother": "Vimala", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Mukesh", "spouse": "", "father": "Senthilmurugan reddy", "mother": "Manju", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "Logashree Sai", "spouse": "", "father": "Saravanan", "mother": "Aarthishwari", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Meganathan", "spouse": "Vishnupriya", "father": "Ashok Kumar Reddy", "mother": "Vimala", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Vishnupriya", "spouse": "Meganathan", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Rohan", "spouse": "", "father": "Meganathan", "mother": "Vishnupriya", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Lingam", "spouse": "Saranya", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Praveen v2", "spouse": "", "father": "Lingam", "mother": "Saranya", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Yeshwanth", "spouse": "Priya", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 7, "name": "Parnitha", "spouse": "", "father": "Yeshwanth", "mother": "Priya", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 7, "name": "jashanth", "spouse": "", "father": "Yeshwanth", "mother": "Priya", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Ramprasath", "spouse": "Gayathiri", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Mahalakshimi", "spouse": "Sankaranarayanan Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Paviththira", "spouse": "", "father": "Sankaranarayanan Reddy", "mother": "Mahalakshimi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Vikadanarayanan Reddy", "spouse": "Lakshimi", "father": "Krishana Reddy", "mother": "Sulochana & Poonkovil", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 5}, {"generation": 5, "name": "Lakshimi", "spouse": "Vikadanarayanan Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Srimathi", "spouse": "", "father": "Vikadanarayanan Reddy", "mother": "Lakshimi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Sharvesh", "spouse": "", "father": "Sankaranarayanan Reddy", "mother": "Mahalakshimi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "chinnathambi", "spouse": "Thulasi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "logeshwaran", "spouse": "", "father": "chinnathambi", "mother": "Thulasi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Viji", "spouse": "", "father": "chinnathambi", "mother": "Thulasi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Prabakaran Reddy", "spouse": "Sathya", "father": "Jayaraman Reddy", "mother": "Aandal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Prakash v3", "spouse": "", "father": "Vikadanarayanan Reddy", "mother": "Lakshimi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 6, "name": "Priyadharshini", "spouse": "", "father": "Vikadanarayanan Reddy", "mother": "Lakshimi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 4, "name": "Sambathkumar", "spouse": "Balambal", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 4, "name": "Balambal", "spouse": "Sambathkumar", "father": "sambasivam Reddy", "mother": "Nurseammal", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 4}, {"generation": 5, "name": "Thamizhselvi(Amulu)", "spouse": "", "father": "Sambathkumar", "mother": "Balambal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 5, "name": "Kumar", "spouse": "", "father": "Sambathkumar", "mother": "Balambal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "Seenu", "spouse": "", "father": "Sambathkumar", "mother": "Balambal", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Pattabiraman", "spouse": "Saraswathi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 5, "name": "Somasundharam", "spouse": "Seethalakshimi", "father": "", "mother": "", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Jagadeesh", "spouse": "", "father": "Somasundharam", "mother": "Seethalakshimi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Kiruthika", "spouse": "", "father": "Somasundharam", "mother": "Seethalakshimi", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Aravind Kumar", "spouse": "", "father": "Pattabiraman", "mother": "Saraswathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Pradeep Kumar", "spouse": "", "father": "Pattabiraman", "mother": "Saraswathi", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 5, "name": "karthika", "spouse": "Venkateshwaran Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Hemapriya", "spouse": "", "father": "Venkateshwaran Reddy", "mother": "karthika", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Kishore", "spouse": "", "father": "Venkateshwaran Reddy", "mother": "karthika", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 2}, {"generation": 6, "name": "Shamitha", "spouse": "", "father": "Venkateshwaran Reddy", "mother": "karthika", "notes": "", "gender": "Male", "dob": "", "dod": "", "order": 3}, {"generation": 5, "name": "Gowthami", "spouse": "Raja Reddy", "father": "", "mother": "", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": ""}, {"generation": 6, "name": "Dharshini", "spouse": "", "father": "Raja Reddy", "mother": "Gowthami", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 1}, {"generation": 6, "name": "Loyshini", "spouse": "", "father": "Raja Reddy", "mother": "Gowthami", "notes": "", "gender": "Female", "dob": "", "dod": "", "order": 2}];
+function loadInitial(){
+ const counts={};
+ return structuredClone(initialData).map(m=>{
+  m.gender=m.gender==='Female'?'Female':'Male';
+  m.dob=m.dob||'';m.dod=m.dod||'';m.kin=!!m.kin;
+  if(m.order===''||m.order==null){if(m.father||m.mother){const k=m.father+'|'+m.mother;counts[k]=(counts[k]||0)+1;m.order=counts[k];}else m.order='';}
+  return m;
+ });
+}
+let members = loadInitial();
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byName = () => Object.fromEntries(members.map(m=>[m.name,m]));
+const genOf = m => Number(m.generation)||1;
+// A partner may be from the same, previous or next generation.
+const spouseOK=(a,b)=>!!a&&!!b&&a.name!==b.name&&Math.abs(genOf(a)-genOf(b))<=1;
+// A parent of someone in generation `gen` is in the previous generation, or is the older partner
+// of a couple whose younger partner is in the previous generation (e.g. Gen 3 + Gen 4 -> children in Gen 5).
+function parentOK(p,gen,map){
+ if(!p)return false;
+ if(genOf(p)===gen-1)return true;
+ const sp=map[p.spouse];
+ return genOf(p)===gen-2&&!!sp&&sp.spouse===p.name&&genOf(sp)===gen-1;
+}
+// Row of the tree a person is drawn in: a couple with partners in two generations sits in the younger partner's row.
+function rowOf(m,map){
+ const g=genOf(m), sp=map[m.spouse];
+ return sp&&sp.spouse===m.name&&spouseOK(m,sp)?Math.max(g,genOf(sp)):g;
+}
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(v){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');return m?`${Number(m[3])} ${MONTHS[Number(m[2])-1]} ${m[1]}`:'';}
+function dateLine(p){const b=fmtDate(p.dob),d=fmtDate(p.dod);if(b&&d)return `${b} – ${d}`;if(b)return `b. ${b}`;if(d)return `d. ${d}`;return '';}
+const orderVal = m => (m.order===''||m.order==null||!Number.isFinite(Number(m.order)))?Infinity:Number(m.order);
+function memberSort(a,b){
+ const ka=(a.father||'')+'|'+(a.mother||''), kb=(b.father||'')+'|'+(b.mother||'');
+ const oa=orderVal(a), ob=orderVal(b);
+ return genOf(a)-genOf(b)||ka.localeCompare(kb)||(oa===ob?0:oa<ob?-1:1)||a.name.localeCompare(b.name);
+}
+function sortFn(mode){
+ const byN=(a,b)=>a.name.localeCompare(b.name);
+ const dobKey=(m,empty)=>m.dob||empty;
+ switch(mode){
+  case 'nameAsc':return byN;
+  case 'nameDesc':return (a,b)=>byN(b,a);
+  case 'dobAsc':return (a,b)=>dobKey(a,'\uffff').localeCompare(dobKey(b,'\uffff'))||byN(a,b);
+  case 'dobDesc':return (a,b)=>{if(!a.dob&&!b.dob)return byN(a,b);if(!a.dob)return 1;if(!b.dob)return -1;return b.dob.localeCompare(a.dob)||byN(a,b);};
+  case 'genDesc':return (a,b)=>genOf(b)-genOf(a)||memberSort(a,b);
+  default:return memberSort;
+ }
+}
+function toast(msg){$('toastText').textContent=msg;bootstrap.Toast.getOrCreateInstance($('appToast')).show();}
+let treeDims={w:0,h:0}, fitMode=false, treeScale=1;
+// ---- Appearance (theme, font, font size) ----
+const THEMES={green:{label:'Forest Green',sw:['#123f2d','#198754']},ocean:{label:'Ocean Blue',sw:['#0b3a66','#1565c0']},purple:{label:'Royal Purple',sw:['#341b66','#6a3db8']},sunset:{label:'Sunset Orange',sw:['#7a3210','#d9622b']},rose:{label:'Rose Pink',sw:['#6b1a40','#c2457b']},slate:{label:'Slate Grey',sw:['#1f2937','#4b5563']},dark:{label:'Dark Mode',sw:['#11171a','#2a9d6b']}};
+const SANS='system-ui,-apple-system,"Segoe UI",sans-serif';
+const FONTS={
+ default:{label:'Default (clean + classic tree)',ui:SANS,tree:'Georgia,serif',fam:null},
+ inter:{label:'Inter',ui:'Inter,'+SANS,tree:'Inter,'+SANS,fam:'Inter'},
+ poppins:{label:'Poppins',ui:'Poppins,'+SANS,tree:'Poppins,'+SANS,fam:'Poppins'},
+ nunito:{label:'Nunito (rounded)',ui:'Nunito,'+SANS,tree:'Nunito,'+SANS,fam:'Nunito'},
+ merriweather:{label:'Merriweather (serif)',ui:'Merriweather,Georgia,serif',tree:'Merriweather,Georgia,serif',fam:'Merriweather'},
+ georgia:{label:'Georgia (classic serif)',ui:'Georgia,"Times New Roman",serif',tree:'Georgia,"Times New Roman",serif',fam:null},
+ mono:{label:'Monospace',ui:'ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',tree:'ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',fam:null}
+};
+let ap={theme:'green',font:'default',size:100}, uiScale=1;
+try{
+ const sv=JSON.parse(localStorage.getItem('familyTreeAppearance')||'null');
+ if(sv){
+  if(THEMES[sv.theme])ap.theme=sv.theme;
+  if(FONTS[sv.font])ap.font=sv.font;
+  if(Number(sv.size)>=85&&Number(sv.size)<=140)ap.size=Number(sv.size);
+ }
+}catch(e){}
+let _ctx=null;
+// Measures text in the chosen font so the tree boxes always fit the names, whatever font/size is used.
+function textW(text,px,weight,family){
+ try{if(!_ctx)_ctx=document.createElement('canvas').getContext('2d');_ctx.font=`${weight} ${px}px ${family}`;return _ctx.measureText(text).width;}
+ catch(e){return String(text).length*px*(weight>=700?0.6:0.55);}
+}
+function applyScale(){
+ const canvas=$('treeCanvas'), scaler=$('treeScaler'), shell=$('treeShell');
+ if(!treeDims.w){treeScale=1;canvas.style.transform='';scaler.style.width='100%';scaler.style.height='auto';return;}
+ treeScale=fitMode?Math.min(1,(shell.clientWidth-4)/treeDims.w):1;
+ canvas.style.transform=treeScale<1?`scale(${treeScale})`:'';
+ scaler.style.width=Math.ceil(treeDims.w*treeScale)+'px';scaler.style.height=Math.ceil(treeDims.h*treeScale)+'px';
+}
+const todayStr=new Date().toISOString().slice(0,10);
+$('dob').max=todayStr;$('dod').max=todayStr;
+
+function rebuildSelects(){
+ const gen=Number($('generation').value)||1, editing=$('editOriginalName').value;
+ const fill=(id,list,emptyText)=>{
+  const sel=$(id), current=sel.value;
+  sel.innerHTML=`<option value="">${list.length?'— Not specified —':emptyText}</option>`+list.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(m=>`<option value="${esc(m.name)}">${esc(m.name)}</option>`).join('');
+  if([...sel.options].some(o=>o.value===current))sel.value=current;
+ };
+ fill('spouse',members.filter(m=>m.name!==editing&&Math.abs(genOf(m)-gen)<=1),'— No one in this or the previous generation —');
+ const pm=byName();
+ fill('father',members.filter(m=>m.gender==='Male'&&parentOK(m,gen,pm)),'— No male in previous generation —');
+ fill('mother',members.filter(m=>m.gender==='Female'&&parentOK(m,gen,pm)),'— No female in previous generation —');
+}
+function suggestOrder(){
+ if($('sibOrder').value!=='')return;
+ const f=$('father').value, mo=$('mother').value, editing=$('editOriginalName').value;
+ if(!f&&!mo)return;
+ const sibs=members.filter(x=>x.name!==editing&&(x.father||'')===f&&(x.mother||'')===mo);
+ $('sibOrder').value=Math.max(0,...sibs.map(x=>Number(x.order)||0))+1;
+}
+function renderTable(){
+ const q=$('searchMembers').value.toLowerCase().trim();
+ const sorted=members.filter(m=>(m.name+' '+m.father+' '+m.mother).toLowerCase().includes(q)).sort(sortFn($('sortMembers').value));
+ $('membersTable').innerHTML=sorted.map(m=>{
+  const dl=dateLine(m);
+  return `<tr class="member-row"><td><div class="fw-semibold">${esc(m.name)}</div><div class="small text-secondary">${esc(m.gender)}${dl?' · '+esc(dl):''}</div></td><td><span class="badge text-bg-light border">${m.generation}</span></td><td class="small">${m.order===''||m.order==null?'—':esc(m.order)}</td><td><span class="small">${esc([m.father,m.mother].filter(Boolean).join(' & ')||'—')}</span></td><td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success me-1" data-edit="${esc(m.name)}">Edit</button><button class="btn btn-sm btn-outline-danger" data-delete="${esc(m.name)}" aria-label="Delete ${esc(m.name)}">×</button></td></tr>`;
+ }).join('') || '<tr><td colspan="5" class="text-center text-secondary py-4">No matching family members.</td></tr>';
+}
+function clearForm(){
+ $('memberForm').reset();$('editOriginalName').value='';$('generation').value='3';$('gender').value='Male';
+ $('formMode').textContent='New member';$('saveBtn').textContent='Save member';rebuildSelects();
+}
+function editMember(name){
+ const m=members.find(x=>x.name===name);if(!m)return;
+ $('editOriginalName').value=m.name;$('name').value=m.name;$('generation').value=m.generation;$('gender').value=m.gender==='Female'?'Female':'Male';
+ $('dob').value=m.dob||'';$('dod').value=m.dod||'';$('sibOrder').value=m.order===''||m.order==null?'':m.order;
+ rebuildSelects();$('spouse').value=m.spouse||'';$('father').value=m.father||'';$('mother').value=m.mother||'';$('notes').value=m.notes||'';$('kin').checked=!!m.kin;
+ $('formMode').textContent='Editing';$('saveBtn').textContent='Update member';
+ $('memberForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function removeMember(name){
+ if(!confirm(`Delete ${name}? References to this person will be cleared.`))return;
+ members=members.filter(m=>m.name!==name);
+ members.forEach(m=>{if(m.spouse===name)m.spouse='';if(m.father===name)m.father='';if(m.mother===name)m.mother='';});
+ renderAll();clearForm();toast('Member deleted.');
+}
+// Clears relationship links that no longer satisfy the rules (e.g. after a gender/generation change).
+function sanitizeLinks(){
+ let n=0;const map=byName();
+ members.forEach(m=>{
+  const g=genOf(m);
+  const f=map[m.father], mo=map[m.mother], sp=map[m.spouse];
+  if(m.father&&!(f&&f.gender==='Male'&&parentOK(f,g,map))){m.father='';n++;}
+  if(m.mother&&!(mo&&mo.gender==='Female'&&parentOK(mo,g,map))){m.mother='';n++;}
+  if(m.spouse&&!spouseOK(m,sp)){m.spouse='';n++;}
+ });
+ return n;
+}
+$('memberForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const old=$('editOriginalName').value;
+ const name=$('name').value.trim();
+ if(!name)return;
+ if(members.some(m=>m.name.toLowerCase()===name.toLowerCase()&&m.name!==old)){alert('A member with this name already exists. Please use a unique name.');return;}
+ const dob=$('dob').value, dod=$('dod').value, gender=$('gender').value;
+ if(!['Male','Female'].includes(gender)){alert('Please select Male or Female.');return;}
+ if(dob&&dod&&dod<dob){alert('Date of death cannot be earlier than the date of birth.');return;}
+ const orderRaw=$('sibOrder').value.trim();
+ const m={generation:Number($('generation').value),name,spouse:$('spouse').value,father:$('father').value,mother:$('mother').value,notes:$('notes').value.trim(),kin:!!($('spouse').value&&$('kin').checked),gender,dob,dod,order:orderRaw===''?'':Math.max(1,Math.floor(Number(orderRaw)))};
+ const map=byName();
+ const f=map[m.father], mo=map[m.mother], sp=map[m.spouse];
+ if(m.father&&!(f&&f.gender==='Male'&&parentOK(f,m.generation,map))){alert('Father must be a male member of the previous generation.');return;}
+ if(m.mother&&!(mo&&mo.gender==='Female'&&parentOK(mo,m.generation,map))){alert('Mother must be a female member of the previous generation.');return;}
+ if(m.spouse&&!spouseOK(m,sp)){alert('Spouse must be a member of the same, previous or next generation.');return;}
+ if(old){members=members.filter(x=>x.name!==old);members.forEach(x=>{if(x.spouse===old)x.spouse=name;if(x.father===old)x.father=name;if(x.mother===old)x.mother=name;});}
+ // Release anyone still pointing at this person as spouse if the link was changed or removed.
+ members.forEach(x=>{if(x.spouse===name&&x.name!==m.spouse)x.spouse='';});
+ members.push(m);
+ // Keep spouse links reciprocal.
+ if(m.spouse){
+  const partner=members.find(x=>x.name===m.spouse);
+  if(partner){
+   if(partner.spouse&&partner.spouse!==name){const prev=members.find(x=>x.name===partner.spouse);if(prev&&prev.spouse===partner.name)prev.spouse='';}
+   partner.spouse=name;partner.kin=m.kin;
+  }
+ }
+ const cleared=sanitizeLinks();
+ renderAll();clearForm();
+ toast((old?'Member updated.':'Member added.')+(cleared?` ${cleared} relationship link(s) that no longer fit the rules were cleared.`:''));
+});
+$('cancelEditBtn').addEventListener('click',clearForm);
+$('generation').addEventListener('change',rebuildSelects);
+$('father').addEventListener('change',suggestOrder);
+$('mother').addEventListener('change',suggestOrder);
+$('searchMembers').addEventListener('input',renderTable);
+$('sortMembers').addEventListener('change',renderTable);
+$('addNewBtn').addEventListener('click',()=>{
+ clearForm();
+ $('memberForm').scrollIntoView({behavior:'smooth',block:'nearest'});
+ setTimeout(()=>$('name').focus({preventScroll:true}),250);
+});
+$('membersTable').addEventListener('click',e=>{
+ const edit=e.target.closest('[data-edit]'), del=e.target.closest('[data-delete]');
+ if(edit)editMember(edit.dataset.edit);if(del)removeMember(del.dataset.delete);
+});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Discard your current changes and reload the original family list?')){members=loadInitial();clearForm();renderAll();toast('Original data restored.');}});
+// Two partners who share an ancestor in this tree (wedding within the same family).
+function ancestorsOf(name,map,seen){
+ seen=seen||new Set();const m=map[name];if(!m)return seen;
+ [m.father,m.mother].forEach(n=>{if(n&&!seen.has(n)){seen.add(n);ancestorsOf(n,map,seen);}});
+ return seen;
+}
+function sameFamily(a,b,map){
+ if(a.kin||b.kin)return true; // marked by the user as a wedding within the family
+ const hasParents=m=>!!((m.father&&map[m.father])||(m.mother&&map[m.mother]));
+ if(hasParents(a)&&hasParents(b))return true; // both partners are children of families in this tree
+ const x=ancestorsOf(a.name,map), y=ancestorsOf(b.name,map);
+ for(const n of x)if(y.has(n))return true;
+ return false;
+}
+function pairMembers(list,rowGen){
+ const map=byName(), used=new Set(), units=[], inList=new Set(list.map(x=>x.name));
+ for(const m of list.slice().sort((a,b)=>a.name.localeCompare(b.name))){
+  if(used.has(m.name))continue;
+  const partner=map[m.spouse];
+  if(partner && partner.name!==m.name && inList.has(partner.name) && !used.has(partner.name) && sameFamily(m,partner,map)){
+   // Wedding within the same family: two separate boxes, joined later by the ▽ connector.
+   used.add(m.name);used.add(partner.name);
+   units.push({people:[m],generation:rowGen,kinSpouse:partner.name});
+   units.push({people:[partner],generation:rowGen,kinSpouse:m.name});
+  }else if(partner && partner.name!==m.name && inList.has(partner.name) && !used.has(partner.name)){
+   used.add(m.name);used.add(partner.name);
+   units.push({people:[m,partner].sort((a,b)=>{
+    if(a.gender!==b.gender){
+     const wife=a.gender==='Female'?a:b;
+     const wifeFirst=!!(wife.father||wife.mother); // wife born into this family goes first
+     return (a===wife)===wifeFirst?-1:1;           // otherwise husband first
+    }
+    const pa=(a.father||a.mother)?1:0, pb=(b.father||b.mother)?1:0;
+    if(pa!==pb)return pb-pa;
+    return a.name.localeCompare(b.name);
+   }),generation:rowGen});
+  }else{used.add(m.name);units.push({people:[m],generation:rowGen});}
+ }
+ return units;
+}
+function buildTree(){
+ const map=byName();
+ const gens=[...new Set(members.map(m=>rowOf(m,map)))].sort((a,b)=>a-b);
+ if(!members.length)return null;
+ const unitsByGen={};
+ gens.forEach(g=>{
+  const list=members.filter(m=>rowOf(m,map)===g);
+  unitsByGen[g]=pairMembers(list,g).map(u=>({...u,children:[]}));
+ });
+ const allUnits=gens.flatMap(g=>unitsByGen[g]||[]);
+ for(const g of gens){
+  if(g===Math.min(...gens))continue;
+  for(const unit of unitsByGen[g]){
+   const parents=[];
+   unit.people.forEach(p=>{
+    if(!(p.father||p.mother))return;
+    [p.father,p.mother].forEach(nm=>{
+     if(!nm)return;
+     const pu=allUnits.filter(u=>u.generation<g&&u.people.some(q=>q.name===nm)).sort((a,b)=>b.generation-a.generation)[0];
+     if(pu&&!parents.includes(pu))parents.push(pu);
+    });
+   });
+   if(!parents.length)continue;
+   parents[0].children.push(unit);   // laid out under the first family
+   unit.extraParents=parents.slice(1); // other family: gets its own connector line
+   unit.primaryParent=parents[0];
+  }
+ }
+ const roots=unitsByGen[Math.min(...gens)]||[];
+ if(roots.length===1){
+  const root=roots[0];
+  const nextGen=unitsByGen[Math.min(...gens)+1]||[];
+  nextGen.forEach(u=>{if(!allUnits.some(parent=>parent.children.includes(u)))root.children.push(u);});
+ }
+ let root;
+ if(roots.length===1)root=roots[0];
+ else root={people:[],generation:0,children:roots.concat(allUnits.filter(u=>!u.people.some(p=>p.father||p.mother)&&!roots.includes(u)))};
+ // Sibling order: the person in each unit who belongs to this parent family decides the left-to-right position.
+ const orderIn=(u,parent)=>{
+  const hit=u.people.find(p=>(p.father||p.mother)&&parent.people.some(q=>q.name===p.father||q.name===p.mother))
+   ||u.people.find(p=>p.father||p.mother)||u.people[0];
+  return orderVal(hit);
+ };
+ function sortRec(u){
+  u.children.sort((a,b)=>{const oa=orderIn(a,u),ob=orderIn(b,u);return (oa===ob?0:oa<ob?-1:1)||a.people[0].name.localeCompare(b.people[0].name);});
+  u.children.forEach(sortRec);
+ }
+ sortRec(root);
+ return root;
+}
+let viewMode='td', detailMode='full', branchName='';
+const isCompact=()=>detailMode==='compact';
+// Box size depends on the view, the detail level and who is in the box.
+function sizeOf(node){
+ const g=node.generation, lr=viewMode==='lr', k=uiScale;
+ if(!node.people.length){node.nodeW=190;node.nodeH=0;return;}
+ const treeF=FONTS[ap.font].tree, uiF=FONTS[ap.font].ui;
+ if(isCompact()){
+  const cfs=(g===1?14:13)*k;
+  node.nodeW=Math.round((lr?180:(g===1?210:180))*k);
+  const tw=textW(node.people.map(p=>p.name).join(' & '),cfs,700,treeF);
+  const lines=Math.max(1,Math.ceil(tw/(node.nodeW-20)));
+  node.nodeH=Math.max(Math.round(40*k),Math.ceil(lines*cfs*1.22)+20);
+  return;
+ }
+ const nameFs=(g===1?18:14)*k, lh=nameFs*1.22, dfs=10*k;
+ const dateH=Math.ceil(dfs*1.5)+1, metaH=Math.ceil(dfs*1.5)+4, minH=Math.round((g===1?100:76)*k);
+ const nameW=p=>textW(p.name,nameFs,700,treeF);
+ const dateW=p=>{const d=dateLine(p);return d?textW(d,dfs,400,uiF):0;};
+ const base=Math.round((lr?210:(g===1?238:g===2?210:190))*k);
+ // Husband and wife go side by side on one line only when BOTH have parents in this
+ // family tree (the couple joins two families); otherwise the names are stacked top-down.
+ node.side=node.people.length===2&&node.people.every(p=>p.father||p.mother);
+ if(!node.side){
+  node.nodeW=Math.max(base,Math.ceil(Math.max(0,...node.people.map(dateW)))+24);
+  let h=20+metaH+6;
+  node.people.forEach((p,i)=>{
+   h+=Math.max(1,Math.ceil(nameW(p)/(node.nodeW-24)))*lh+(dateLine(p)?dateH:0);
+   if(i)h+=Math.ceil(11*k)+6;
+  });
+  node.nodeH=Math.max(minH,Math.ceil(h));
+  return;
+ }
+ const cols=node.people.map(p=>{
+  const w=Math.min(200*k,Math.max(nameW(p),dateW(p))+8);
+  return {w,lines:Math.max(1,Math.ceil(nameW(p)/(w-8))),date:dateW(p)>0};
+ });
+ node.nodeW=Math.ceil(Math.max(base,cols.reduce((sum,c)=>sum+c.w,0)+26*k+28));
+ node.ampH=Math.round(lh);
+ const row=Math.max(...cols.map(c=>c.lines*lh+(c.date?dateH:0)));
+ node.nodeH=Math.max(minH,Math.ceil(20+row+metaH+6));
+}
+function treeMetrics(node){
+ sizeOf(node);
+ const lr=viewMode==='lr', sib=lr?16:28;
+ node.breadth=lr?node.nodeH:node.nodeW;   // size across the siblings direction
+ if(!node.children.length){node.subtreeB=node.breadth;return node.subtreeB;}
+ node.children.forEach(treeMetrics);
+ const total=node.children.reduce((s,c)=>s+c.subtreeB,0)+sib*(node.children.length-1);
+ node.subtreeB=Math.max(node.breadth,total);
+ return node.subtreeB;
+}
+function maxOf(n,key){return Math.max(n[key],...n.children.map(c=>maxOf(c,key)));}
+// A couple that comes from two families is moved to the middle of those two families
+// (only if there is free space, so nothing ever overlaps).
+function centerBetweenFamilies(shown,lr,margin){
+ const ax=lr?'y':'x', sz=lr?'nodeH':'nodeW', ox=lr?'x':'y', osz=lr?'nodeW':'nodeH';
+ const subtree=n=>[n,...n.children.flatMap(subtree)];
+ // Children that have the same two parent boxes are moved together as one group,
+ // so they stay evenly spaced and centred under the point where the parents join.
+ const groups=new Map();
+ shown.filter(n=>n.primaryParent&&n.extraParents&&n.extraParents.length).forEach(c=>{
+  const parents=[c.primaryParent,...c.extraParents].filter(P=>shown.includes(P));
+  if(parents.length<2)return;
+  const key=parents.map(P=>shown.indexOf(P)).sort((a,b)=>a-b).join('|');
+  if(!groups.has(key))groups.set(key,{parents,kids:[]});
+  groups.get(key).kids.push(c);
+ });
+ [...groups.values()].sort((a,b)=>a.kids[0].generation-b.kids[0].generation).forEach(g=>{
+  const target=g.parents.reduce((sum,P)=>sum+P[ax]+P[sz]/2,0)/g.parents.length;
+  const lo=Math.min(...g.kids.map(c=>c[ax])), hi=Math.max(...g.kids.map(c=>c[ax]+c[sz]));
+  const d=target-(lo+hi)/2;
+  if(Math.abs(d)<1)return;
+  const moved=g.kids.flatMap(subtree), rest=shown.filter(n=>!moved.includes(n));
+  if(moved.some(n=>n[ax]+d<margin))return;
+  const clash=moved.some(m=>rest.some(r=>
+   m[ax]+d<r[ax]+r[sz]+14&&r[ax]<m[ax]+d+m[sz]+14&&m[ox]<r[ox]+r[osz]&&r[ox]<m[ox]+m[osz]));
+  if(!clash)moved.forEach(n=>{n[ax]+=d;});
+ });
+}
+function layoutTree(root){
+ const margin=36, lr=viewMode==='lr', sib=lr?16:28;
+ treeMetrics(root);
+ const countMulti=n=>(n.extraParents&&n.extraParents.length?1:0)+n.children.reduce((sum,c)=>sum+countMulti(c),0);
+ // extra room for the separate connector lanes of children that have two parent boxes
+ const countKin=n=>(n.kinSpouse?0.5:0)+n.children.reduce((sum,c)=>sum+countKin(c),0);
+ const laneCount=Math.min(countMulti(root)+Math.ceil(countKin(root)),9);
+ const depthStep=(lr?maxOf(root,'nodeW')+70:maxOf(root,'nodeH')+52)+(laneCount?32+16*laneCount:0)+(window.rowGapExtra||0);
+ const positions=[];
+ const shownGens=[];(function walk(n){if(n.people.length)shownGens.push(n.generation);n.children.forEach(walk);})(root);
+ const minGen=Math.min(...shownGens);
+ function place(n,start){
+  const b=start+n.subtreeB/2-n.breadth/2;
+  const d=n.people.length?margin+(n.generation-minGen)*depthStep:margin-depthStep;
+  if(lr){n.x=d;n.y=b;}else{n.x=b;n.y=d;}
+  positions.push(n);
+  if(n.children.length){
+   const total=n.children.reduce((s,c)=>s+c.subtreeB,0)+sib*(n.children.length-1);
+   let cur=start+(n.subtreeB-total)/2;
+   n.children.forEach(c=>{place(c,cur);cur+=c.subtreeB+sib;});
+  }
+ }
+ place(root,margin);
+ const shown=positions.filter(n=>n.people.length);
+ centerBetweenFamilies(shown,lr,margin);
+ const maxX=Math.max(...shown.map(n=>n.x+n.nodeW)), maxY=Math.max(...shown.map(n=>n.y+n.nodeH));
+ const kinPad=shown.some(n=>n.kinSpouse)?60+12*Math.ceil(shown.filter(n=>n.kinSpouse).length/2):0; // room for the ▽ connector below the last row
+ const width=lr?maxX+margin+kinPad:Math.max(root.subtreeB+margin*2,maxX+margin,700);
+ const height=lr?Math.max(root.subtreeB+margin*2,maxY+margin,300):maxY+margin+kinPad;
+ return {positions,width,height};
+}
+// "Generation rows": one banded row per generation, families kept side by side, no connector lines.
+function layoutRows(root){
+ const margin=36, gapX=28, gapY=40, labelW=Math.round((isCompact()?100:130)*uiScale);
+ const order=[];(function walk(n){if(n.people.length)order.push(n);n.children.forEach(walk);})(root);
+ order.forEach(sizeOf);
+ const gens=[...new Set(order.map(n=>n.generation))].sort((a,b)=>a-b);
+ const rows=gens.map(g=>{
+  const nodes=order.filter(n=>n.generation===g);
+  return {g,nodes,w:nodes.reduce((s,n)=>s+n.nodeW,0)+gapX*(nodes.length-1),h:Math.max(...nodes.map(n=>n.nodeH))};
+ });
+ const contentW=Math.max(...rows.map(r=>r.w));
+ const width=Math.max(labelW+contentW+margin*2,700);
+ let y=margin, under='';
+ rows.forEach((r,i)=>{
+  const top=y-14, h=r.h+28;
+  under+=`<div class="gen-band${i%2?' alt':''}" style="top:${top}px;height:${h}px"></div><div class="gen-label" style="top:${top}px;height:${h}px;width:${labelW}px">Generation ${r.g}</div>`;
+  let x=margin+labelW+(contentW-r.w)/2;
+  r.nodes.forEach(n=>{n.x=x;n.y=y+(r.h-n.nodeH)/2;x+=n.nodeW+gapX;});
+  y+=r.h+gapY;
+ });
+ return {positions:order,width,height:y-gapY+margin,under};
+}
+function buildLinks(positions){
+ const lr=viewMode==='lr';
+ const path=d=>`<path d="${d}" fill="none" stroke="#9c6b35" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+ // Common junction line per generation (just below the tallest box / right of the widest box of that row).
+ const edge={};
+ positions.forEach(n=>{if(!n.people.length)return;const e=lr?n.x+n.nodeW:n.y+n.nodeH;edge[n.generation]=Math.max(edge[n.generation]??-Infinity,e);});
+ const junction=n=>edge[n.generation]+(lr?35:24);
+ // A child with two parent boxes gets its own connector (its own "lane"), so lines of different children never overlap.
+ const parentsOf=c=>[c.primaryParent,...(c.extraParents||[])].filter(P=>P&&positions.includes(P));
+ // Same-family weddings: both partners are separate boxes, each with its own line down to a shared ▽.
+ const kinPairs=[], kinKid=new Set(), seenK=new Set();
+ positions.forEach(n=>{
+  if(!n.people.length||!n.kinSpouse)return;
+  const o=positions.find(u=>u!==n&&u.people.length===1&&u.people[0].name===n.kinSpouse&&u.generation===n.generation);
+  if(!o)return;
+  const key=[n.people[0].name,o.people[0].name].sort().join('|');
+  if(seenK.has(key))return;seenK.add(key);
+  const kids=positions.filter(c=>c.people.length&&c.primaryParent&&parentsOf(c).length===2&&parentsOf(c).includes(n)&&parentsOf(c).includes(o));
+  kids.forEach(c=>kinKid.add(c));
+  kinPairs.push({A:n,B:o,kids});
+ });
+ const isMulti=c=>c.people.length&&c.primaryParent&&c.extraParents&&c.extraParents.length&&parentsOf(c).length>=2&&!kinKid.has(c);
+ const placeTri=(pref,lo,hi,fixed,g,skip,lr)=>{
+  const cen=u=>lr?u.y+u.nodeH/2:u.x+u.nodeW/2;
+  const obs=positions.filter(u=>u.people.length&&(u.generation===g||u.generation===g+1)&&!skip.includes(u)).map(cen);
+  const lo2=hi-lo>40?lo+14:(lo+hi)/2, hi2=hi-lo>40?hi-14:(lo+hi)/2;
+  const cands=[];for(let x=lo2;x<=hi2+0.1;x+=4)cands.push(x);cands.push(pref);
+  const ok=(x,gap)=>obs.every(o=>Math.abs(o-x)>=gap)&&tris.every(t=>!(Math.abs(t.fixed-fixed)<20&&Math.abs(t.pos-x)<24));
+  const byDist=cands.slice().sort((a,b)=>Math.abs(a-pref)-Math.abs(b-pref));
+  const pick=byDist.find(x=>x>=lo2-0.1&&x<=hi2+0.1&&ok(x,14))??byDist.find(x=>x>=lo2-0.1&&x<=hi2+0.1&&ok(x,8))??Math.min(hi2,Math.max(lo2,pref));
+  tris.push({pos:pick,fixed,lr});return pick;
+ };
+ const tri=(x,y)=>`<polygon points="${x-9},${y-8} ${x+9},${y-8} ${x},${y+9}" fill="#fbe3a1" stroke="#9a5f0b" stroke-width="2.2" stroke-linejoin="round"><title>Wedding within the same family</title></polygon>`;
+ let out='';
+ const tris=[]; // drawn last so no line is ever painted over a ▽
+ positions.forEach(n=>{
+  const kids=n.children.filter(c=>!isMulti(c)&&!kinKid.has(c));
+  if(!n.people.length||!kids.length)return;
+  if(lr){
+   const px=n.x+n.nodeW, py=n.y+n.nodeH/2, bx=junction(n);
+   const cys=kids.map(c=>c.y+c.nodeH/2);
+   const lo=Math.min(py,...cys), hi=Math.max(py,...cys);
+   out+=path(`M ${px} ${py} H ${bx}`);
+   if(hi>lo)out+=path(`M ${bx} ${lo} V ${hi}`);
+   kids.forEach((c,i)=>out+=path(`M ${bx} ${cys[i]} H ${c.x}`));
+  }else{
+   const px=n.x+n.nodeW/2, py=n.y+n.nodeH, by=junction(n);
+   const cxs=kids.map(c=>c.x+c.nodeW/2);
+   const lo=Math.min(px,...cxs), hi=Math.max(px,...cxs);
+   out+=path(`M ${px} ${py} V ${by}`);
+   if(hi>lo)out+=path(`M ${lo} ${by} H ${hi}`);
+   kids.forEach((c,i)=>out+=path(`M ${cxs[i]} ${by} V ${c.y}`));
+  }
+ });
+ // Assign lanes: children whose connector spans overlap get different lanes.
+ const items=positions.filter(isMulti).map(c=>{
+  const ps=parentsOf(c);
+  const pos=[...ps.map(P=>lr?P.y+P.nodeH/2:P.x+P.nodeW/2), lr?c.y+c.nodeH/2:c.x+c.nodeW/2];
+  return {c,ps,lo:Math.min(...pos),hi:Math.max(...pos)};
+ }).concat(kinPairs.map(k=>{
+  const cen=u=>lr?u.y+u.nodeH/2:u.x+u.nodeW/2;
+  const pos=[cen(k.A),cen(k.B)];
+  return {kin:k,lo:Math.min(...pos),hi:Math.max(...pos),c:k.A,ps:[k.A,k.B]};
+ })).sort((a,b)=>a.c.generation-b.c.generation||a.lo-b.lo||a.hi-b.hi);
+ const laneEnds={};
+ items.forEach(it=>{
+  const ends=laneEnds[it.c.generation]||(laneEnds[it.c.generation]=[]);
+  let k=ends.findIndex(e=>e<it.lo-10);
+  if(k<0){k=ends.length;ends.push(it.hi);}else ends[k]=it.hi;
+  it.lane=k+1;
+ });
+ items.forEach(it=>{
+  const {c,ps,lo,hi,lane}=it, g=ps[0].generation;
+  if(it.kin){
+   const {A,B,kids}=it.kin;
+   if(lr){
+    const nextX=kids.length?Math.min(...kids.map(k=>k.x))-10:Infinity;
+    const bx=Math.min(edge[g]+41+14*lane,nextX), acy=A.y+A.nodeH/2, bcy=B.y+B.nodeH/2;
+    const kc=kids.map(k=>k.y+k.nodeH/2), span=Math.abs(bcy-acy), l2=Math.min(acy,bcy)+span*0.2, h2=Math.max(acy,bcy)-span*0.2;
+    const my=placeTri(kids.length?Math.max(l2,Math.min(h2,(Math.min(...kc)+Math.max(...kc))/2)):(acy+bcy)/2,Math.min(acy,bcy),Math.max(acy,bcy),bx,g,kids,true);
+    [A,B].forEach(P=>out+=path(`M ${P.x+P.nodeW} ${P.y+P.nodeH/2} H ${bx}`));
+    out+=path(`M ${bx} ${lo} V ${hi}`);
+    if(kids.length){
+     const bx2=Math.min(nextX-2,bx+Math.max(16,(nextX-bx)*0.55));
+     out+=path(`M ${bx} ${my} H ${bx2}`);
+     out+=path(`M ${bx2} ${Math.min(my,...kc)} V ${Math.max(my,...kc)}`);
+     kids.forEach(k=>out+=path(`M ${bx2} ${k.y+k.nodeH/2} H ${k.x}`));
+    }
+   }else{
+    const nextY=kids.length?Math.min(...kids.map(k=>k.y))-10:Infinity;
+    const by=Math.min(edge[g]+30+14*lane,nextY), acx=A.x+A.nodeW/2, bcx=B.x+B.nodeW/2;
+    const kc=kids.map(k=>k.x+k.nodeW/2), span=Math.abs(bcx-acx), l2=Math.min(acx,bcx)+span*0.2, h2=Math.max(acx,bcx)-span*0.2;
+    // the ▽ sits on the joining line, as close above the children as the parents' span allows
+    const mx=placeTri(kids.length?Math.max(l2,Math.min(h2,(Math.min(...kc)+Math.max(...kc))/2)):(acx+bcx)/2,Math.min(acx,bcx),Math.max(acx,bcx),by,g,kids,false);
+    [A,B].forEach(P=>out+=path(`M ${P.x+P.nodeW/2} ${P.y+P.nodeH} V ${by}`));
+    out+=path(`M ${lo} ${by} H ${hi}`);
+    if(kids.length){
+     const by2=Math.min(nextY-2,by+Math.max(16,(nextY-by)*0.55));
+     out+=path(`M ${mx} ${by} V ${by2}`);
+     out+=path(`M ${Math.min(mx,...kc)} ${by2} H ${Math.max(mx,...kc)}`);
+     kids.forEach(k=>out+=path(`M ${k.x+k.nodeW/2} ${by2} V ${k.y}`));
+    }
+   }
+   return;
+  }
+  if(lr){
+   const bx=Math.min(edge[g]+41+14*lane,c.x-10), cy=c.y+c.nodeH/2;
+   ps.forEach(P=>out+=path(`M ${P.x+P.nodeW} ${P.y+P.nodeH/2} H ${bx}`));
+   out+=path(`M ${bx} ${lo} V ${hi}`);
+   out+=path(`M ${bx} ${cy} H ${c.x}`);
+  }else{
+   const by=Math.min(edge[g]+30+14*lane,c.y-10), cx=c.x+c.nodeW/2;
+   ps.forEach(P=>out+=path(`M ${P.x+P.nodeW/2} ${P.y+P.nodeH} V ${by}`));
+   out+=path(`M ${lo} ${by} H ${hi}`);
+   out+=path(`M ${cx} ${by} V ${c.y}`);
+  }
+ });
+ tris.forEach(t=>{out+=t.lr?tri(t.fixed,t.pos):tri(t.pos,t.fixed);});
+ return out;
+}
+function personHTML(p){
+ const d=dateLine(p);
+ return `<div class="person"><div class="node-name">${esc(p.name)}</div>${d?`<div class="node-dates">${esc(d)}</div>`:''}</div>`;
+}
+function nodeHTML(n){
+ if(!n.people.length)return '';
+ const gen=Math.max(...n.people.map(genOf));
+ const gl=[...new Set(n.people.map(genOf))].sort((a,b)=>a-b).join(' & ');
+ const cls=gen===1?'root':gen===2?'gen2':gen===3?'gen3':'gen4';
+ const style=`left:${n.x}px;top:${n.y}px;width:${n.nodeW}px;height:${n.nodeH}px`;
+ if(isCompact()){
+  const tip=n.people.map(p=>p.name+(dateLine(p)?' ('+dateLine(p)+')':'')).join(' & ');
+  return `<div class="family-node ${cls} compact" title="${esc(tip)}" style="${style}"><div class="node-name">${n.people.map(p=>esc(p.name)).join(' &amp; ')}</div></div>`;
+ }
+ return `<div class="family-node ${cls}" style="${style}">${n.side?`<div class="couple">${n.people.map(personHTML).join(`<div class="amp-side" style="height:${n.ampH}px">&amp;</div>`)}</div>`:n.people.map(personHTML).join('<div class="amp">&amp;</div>')}<div class="node-meta">Generation ${gl}</div></div>`;
+}
+function findUnit(n,name){
+ if(n.people.some(p=>p.name===name))return n;
+ for(const c of n.children){const r=findUnit(c,name);if(r)return r;}
+ return null;
+}
+function rebuildBranch(){
+ const sel=$('branchSel');
+ if(!members.some(m=>m.name===branchName))branchName='';
+ sel.innerHTML='<option value="">Whole family</option>'+members.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(m=>`<option value="${esc(m.name)}">${esc(m.name)} (Gen ${m.generation})</option>`).join('');
+ sel.value=branchName;
+}
+function renderTree(){
+ let root=buildTree();
+ const canvas=$('treeCanvas'), nodes=$('treeNodes'), svg=$('treeLines');
+ if(!root){canvas.style.width='100%';canvas.style.height='300px';nodes.innerHTML='<div class="empty-state">Add family members to begin building your tree.</div>';svg.innerHTML='';$('treeSubtitle').textContent='No family members yet';treeDims={w:0,h:0};applyScale();return;}
+ let branchLabel='';
+ if(branchName){
+  const sub=findUnit(root,branchName);
+  if(sub){root=sub;branchLabel=branchName;}else{branchName='';$('branchSel').value='';}
+ }
+ const L=viewMode==='rows'?layoutRows(root):layoutTree(root);
+ const {positions,width,height}=L;
+ canvas.style.width=width+'px';canvas.style.height=height+'px';svg.setAttribute('width',width);svg.setAttribute('height',height);svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+ svg.innerHTML=viewMode==='rows'?'':buildLinks(positions);
+ nodes.innerHTML=(L.under||'')+positions.map(nodeHTML).join('');
+ const shown=positions.filter(n=>n.people.length);
+ const gensN=new Set(shown.map(n=>n.generation)).size;
+ $('treeSubtitle').textContent=branchLabel
+  ?`Branch of ${branchLabel} · ${shown.reduce((s,n)=>s+n.people.length,0)} members · ${gensN} generations`
+  :`${members.length} family members · ${new Set(members.map(m=>m.generation)).size} generations`;
+ treeDims={w:width,h:height};applyScale();
+}
+function renderAll(){rebuildSelects();rebuildBranch();renderTable();renderTree();scheduleAutoSave();}
+// ---------- Save / open data (JSON or CSV) ----------
+const SAVE_COLS=[['Generation','generation'],['Name','name'],['Gender','gender'],['Spouse','spouse'],['Father','father'],['Mother','mother'],['Date of Birth','dob'],['Date of Death','dod'],['Sibling Order','order'],['Same Family Wedding','kin'],['Notes','notes']];
+const hasSavePicker=typeof window.showSaveFilePicker==='function';
+let saveHandle=null, saveFmt='json', autoTimer=null;
+const csvCell=v=>{v=String(v??'');return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+function serializeData(fmt){
+ if(fmt==='csv'){
+  return '\ufeff'+[SAVE_COLS.map(c=>c[0]).join(',')].concat(members.map(m=>SAVE_COLS.map(c=>csvCell(c[1]==='kin'?(m.kin?'Yes':''):m[c[1]])).join(','))).join('\r\n')+'\r\n';
+ }
+ return JSON.stringify({app:'Family Tree Builder',version:1,savedAt:new Date().toISOString(),members:members.map(m=>{const o={};SAVE_COLS.forEach(c=>o[c[1]]=c[1]==='kin'?!!m.kin:(m[c[1]]??''));return o;})},null,2);
+}
+function parseCSV(text){
+ text=text.replace(/^\ufeff/,'');
+ const rows=[];let row=[],cell='',q=false;
+ for(let i=0;i<text.length;i++){
+  const ch=text[i];
+  if(q){if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++;}else q=false;}else cell+=ch;}
+  else if(ch==='"')q=true;
+  else if(ch===','){row.push(cell);cell='';}
+  else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&text[i+1]==='\n')i++;row.push(cell);cell='';rows.push(row);row=[];}
+  else cell+=ch;
+ }
+ if(cell!==''||row.length){row.push(cell);rows.push(row);}
+ return rows.filter(r=>r.some(c=>String(c).trim()!==''));
+}
+function membersFromText(text,fileName){
+ const isCsv=/\.csv$/i.test(fileName||'')||!/^\s*[\[{]/.test(text);
+ let raw=[];
+ if(isCsv){
+  const rows=parseCSV(text);if(rows.length<2)throw new Error('The CSV file has no data rows.');
+  const norm=h=>String(h).trim().toLowerCase().replace(/[^a-z]/g,'');
+  const alias={generation:'generation',name:'name',gender:'gender',spouse:'spouse',father:'father',mother:'mother',dateofbirth:'dob',dob:'dob',dateofdeath:'dod',dod:'dod',siblingorder:'order',order:'order',samefamilywedding:'kin',samefamily:'kin',kin:'kin',notes:'notes'};
+  const keys=rows[0].map(h=>alias[norm(h)]||null);
+  if(!keys.includes('name'))throw new Error('The CSV needs a "Name" column.');
+  raw=rows.slice(1).map(r=>{const o={};keys.forEach((k,i)=>{if(k)o[k]=r[i]??'';});return o;});
+ }else{
+  const j=JSON.parse(text);raw=Array.isArray(j)?j:j.members;
+  if(!Array.isArray(raw))throw new Error('The JSON file has no "members" list.');
+ }
+ const seen=new Set(), out=[];
+ raw.forEach(r=>{
+  const name=String(r.name??'').trim();if(!name||seen.has(name))return;seen.add(name);
+  const iso=v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v??'').trim())?String(v).trim():'';
+  const ord=String(r.order??'').trim();
+  out.push({generation:Math.max(1,Math.round(Number(r.generation))||1),name,
+   spouse:String(r.spouse??'').trim(),father:String(r.father??'').trim(),mother:String(r.mother??'').trim(),
+   kin:/^(yes|true|y|1)$/i.test(String(r.kin??'').trim()),notes:String(r.notes??'').trim(),gender:String(r.gender).trim().toLowerCase()==='female'?'Female':'Male',
+   dob:iso(r.dob),dod:iso(r.dod),order:ord===''||isNaN(Number(ord))?'':Math.max(1,Math.floor(Number(ord)))});
+ });
+ if(!out.length)throw new Error('No members were found in the file.');
+ return out;
+}
+function downloadData(fmt){
+ const blob=new Blob([serializeData(fmt)],{type:fmt==='csv'?'text/csv;charset=utf-8':'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='family-tree-data.'+fmt;
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ toast('Downloaded family-tree-data.'+fmt+' (check your Downloads folder).');
+}
+async function writeHandle(h){
+ const fmt=/\.csv$/i.test(h.name)?'csv':'json';
+ const w=await h.createWritable();await w.write(serializeData(fmt));await w.close();
+}
+function updateAutoUI(){
+ const cb=$('autoSave');
+ $('autoSaveLbl').textContent=saveHandle?`Auto-save to ${saveHandle.name}`:'Auto-save after every change';
+ if(!saveHandle)cb.checked=false;
+ if(!hasSavePicker){cb.disabled=true;$('autoSaveLbl').title='Needs Chrome or Edge';$('saveHint').textContent='Your browser will download the file to its Downloads folder (use Chrome or Edge to pick the folder).';}
+}
+async function saveData(fmt){
+ if(!members.length){toast('Add at least one family member before saving.');return;}
+ saveFmt=fmt;
+ if(!hasSavePicker){downloadData(fmt);return;}
+ try{
+  const h=await window.showSaveFilePicker({suggestedName:'family-tree-data.'+fmt,
+   types:[fmt==='json'?{description:'JSON file',accept:{'application/json':['.json']}}:{description:'CSV file',accept:{'text/csv':['.csv']}}]});
+  await writeHandle(h);saveHandle=h;updateAutoUI();toast('Saved to '+h.name);
+ }catch(e){if(e&&e.name==='AbortError')return;console.error(e);downloadData(fmt);}
+}
+function scheduleAutoSave(){
+ if(!saveHandle||!$('autoSave')||!$('autoSave').checked)return;
+ clearTimeout(autoTimer);
+ autoTimer=setTimeout(async()=>{
+  try{await writeHandle(saveHandle);}
+  catch(e){console.error(e);$('autoSave').checked=false;toast('Auto-save stopped. Use Save as JSON/CSV again.');}
+ },500);
+}
+function applyLoaded(text,fileName){
+ let list;
+ try{list=membersFromText(text,fileName);}catch(e){alert('Could not open the file: '+e.message);return;}
+ if(members.length&&!confirm(`Replace the current ${members.length} members with ${list.length} members from "${fileName}"?`))return;
+ members=list;branchName='';$('branchSel').value='';clearForm();renderAll();toast(`Loaded ${list.length} members from ${fileName}.`);
+}
+$('saveJsonBtn').addEventListener('click',()=>saveData('json'));
+$('saveCsvBtn').addEventListener('click',()=>saveData('csv'));
+$('openDataBtn').addEventListener('click',()=>$('openDataInput').click());
+$('openDataInput').addEventListener('change',async e=>{
+ const f=e.target.files[0];e.target.value='';if(!f)return;
+ applyLoaded(await f.text(),f.name);
+});
+$('autoSave').addEventListener('change',async e=>{
+ if(e.target.checked&&!saveHandle){await saveData(saveFmt);if(!saveHandle)e.target.checked=false;}
+ else if(e.target.checked)scheduleAutoSave();
+});
+updateAutoUI();
+async function exportJPEG(){
+ const target=$('treeCanvas');
+ if(!members.length){toast('Add at least one family member before exporting.');return;}
+ const prevFit=fitMode;
+ try{
+  fitMode=false;applyScale(); // always export at full size
+  const oldBg=target.style.background;
+  target.style.background='#fffdf7';
+  // Keep the bitmap within what browsers can draw (very wide trees would otherwise come out with blank areas).
+  const w=target.offsetWidth, h=target.offsetHeight;
+  const scale=Math.max(0.5,Math.min(2,15000/w,15000/h,Math.sqrt(80e6/(w*h))));
+  const canvas=await html2canvas(target,{backgroundColor:'#fffdf7',scale,useCORS:true,logging:false,
+   onclone:doc=>{const t=doc.getElementById('treeCanvas');if(t)t.classList.add('exporting');}});
+  const link=document.createElement('a');link.download='family-tree.jpeg';link.href=canvas.toDataURL('image/jpeg',0.96);link.click();
+  target.style.background=oldBg;toast('JPEG export started.');
+ }catch(err){console.error(err);toast('JPEG export failed. Check your internet connection and try again.');}
+ finally{fitMode=prevFit;applyScale();}
+}
+function toDate(v){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');return m?new Date(Date.UTC(+m[1],+m[2]-1,+m[3])):'';}
+function exportExcel(){
+ if(!members.length){toast('Add at least one family member before exporting.');return;}
+ if(typeof XLSX==='undefined'){toast('Excel export failed. Check your internet connection and try again.');return;}
+ try{
+  const rows=members.slice().sort(memberSort).map(m=>({
+   'Generation':m.generation,
+   'Sibling Order':m.order===''||m.order==null?'':Number(m.order),
+   'Name':m.name,
+   'Gender':m.gender,
+   'Date of Birth':toDate(m.dob),
+   'Date of Death':toDate(m.dod),
+   'Spouse':m.spouse||'',
+   'Father':m.father||'',
+   'Mother':m.mother||'',
+   'Notes':m.notes||''
+  }));
+  const ws=XLSX.utils.json_to_sheet(rows,{cellDates:true});
+  Object.keys(ws).forEach(k=>{if(k[0]!=='!'&&ws[k].t==='d')ws[k].z='dd-mmm-yyyy';});
+  ws['!cols']=[{wch:11},{wch:14},{wch:24},{wch:9},{wch:14},{wch:14},{wch:22},{wch:22},{wch:22},{wch:34}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Family Members');
+  XLSX.writeFile(wb,'family-tree.xlsx',{cellDates:true});
+  toast('Excel export started.');
+ }catch(err){console.error(err);toast('Excel export failed.');}
+}
+['exportBtn'].forEach(id=>$(id).addEventListener('click',exportJPEG));
+['exportXlsxBtn'].forEach(id=>$(id).addEventListener('click',exportExcel));
+$('clearAllBtn').addEventListener('click',()=>{
+ if(!members.length){toast('There are no members to clear.');return;}
+ if(confirm('Clear ALL family members? This removes everyone from the list and the tree. You can still use "Reset to loaded data" to restore the original list.')){members=[];clearForm();renderAll();toast('All members cleared.');}
+});
+$('fitBtn').addEventListener('click',()=>{
+ if(!treeDims.w){toast('Add family members first.');return;}
+ fitMode=!fitMode;applyScale();
+ $('fitBtn').textContent=fitMode?'⤢ Actual size':'⤢ Fit view';
+ $('treeShell').scrollTo({left:0,top:0});
+ $('treeShell').scrollIntoView({behavior:'smooth',block:'nearest'});
+ if(fitMode&&treeScale===1)toast('The whole tree already fits in the view.');
+});
+$('viewMode').addEventListener('change',e=>{viewMode=e.target.value;renderTree();});
+$('detailMode').addEventListener('change',e=>{detailMode=e.target.value;renderTree();});
+$('branchSel').addEventListener('change',e=>{branchName=e.target.value;renderTree();});
+window.addEventListener('resize',()=>{if(fitMode)applyScale();});
+function buildAppearanceUI(){
+ $('themeGrid').innerHTML=Object.entries(THEMES).map(([k,t])=>`<label class="theme-opt" data-theme="${k}"><input type="radio" name="themeOpt" value="${k}"><span class="swatch" style="background:linear-gradient(135deg,${t.sw[0]} 50%,${t.sw[1]} 50%)"></span>${t.label}</label>`).join('');
+ $('fontSel').innerHTML=Object.entries(FONTS).map(([k,f])=>`<option value="${k}">${f.label}</option>`).join('');
+}
+function applyAppearance(rerender){
+ const root=document.documentElement, f=FONTS[ap.font];
+ root.setAttribute('data-app-theme',ap.theme);
+ root.setAttribute('data-bs-theme',ap.theme==='dark'?'dark':'light');
+ root.style.setProperty('--ui-font',f.ui);root.style.setProperty('--tree-font',f.tree);
+ uiScale=ap.size/100;
+ root.style.setProperty('--ui-scale',uiScale);root.style.setProperty('--ts',uiScale);
+ document.querySelectorAll('.theme-opt').forEach(el=>{const on=el.dataset.theme===ap.theme;el.classList.toggle('active',on);el.querySelector('input').checked=on;});
+ $('fontSel').value=ap.font;$('sizeRange').value=ap.size;$('sizeLabel').textContent=ap.size+'%';
+ $('fontPreview').style.fontFamily=f.ui;
+ try{localStorage.setItem('familyTreeAppearance',JSON.stringify(ap));}catch(e){}
+ if(rerender){
+  renderTree();
+  // Web fonts load asynchronously: measure again once the chosen font is ready.
+  if(f.fam&&document.fonts&&document.fonts.load){
+   Promise.all([document.fonts.load(`700 16px "${f.fam}"`),document.fonts.load(`400 12px "${f.fam}"`)]).then(()=>renderTree()).catch(()=>{});
+  }
+ }
+}
+$('themeGrid').addEventListener('change',e=>{if(e.target.name==='themeOpt'){ap.theme=e.target.value;applyAppearance(false);}});
+$('fontSel').addEventListener('change',e=>{ap.font=e.target.value;applyAppearance(true);});
+$('sizeRange').addEventListener('input',e=>{ap.size=Number(e.target.value);applyAppearance(true);});
+$('appearanceReset').addEventListener('click',()=>{ap={theme:'green',font:'default',size:100};applyAppearance(true);});
+buildAppearanceUI();applyAppearance(false);
+clearForm();renderAll();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>renderTree());
+</script>
+</body>
+</html>
